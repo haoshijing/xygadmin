@@ -7,10 +7,6 @@
       </el-input>
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="微信号" v-model="listQuery.weChartNo">
       </el-input>
-      <el-select clearable class="filter-item" style="width: 130px" v-model="listQuery.level" placeholder="代理类别">
-        <el-option v-for="item in proxyList" :key="item.key" :label="item.label" :value="item.key">
-        </el-option>
-      </el-select>
 
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="昵称" v-model="listQuery.nickName">
       </el-input>
@@ -41,42 +37,38 @@
         </template>
       </el-table-column>
 
-      <el-table-column  label="代理类别">
-        <template scope="scope">
-          <span>{{scope.row.type | typeFilter }}</span>
-        </template>
-      </el-table-column>
-
       <el-table-column  align="center" label="备注名">
         <template scope="scope">
           <span>{{scope.row.weChartNo}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column  align="center" label="金豆">
+      <el-table-column  align="center" label="卡片">
+        <template scope="scope">
+          <span>{{scope.row.cardCount}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column  label="金币">
         <template scope="scope">
           <span>{{scope.row.goldCount}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column  label="银豆">
+      <el-table-column  label="钻石">
         <template scope="scope">
-          <span>{{scope.row.sliverCount}}</span>
+          <span>{{scope.row.diamondCount}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="下属代理" width="95">
+      <el-table-column align="center" label="新增用户数" width="95">
         <template scope="scope">
-          <span v-if="scope.row.type === 2 " class="link-type" @click='handlerUnderProxyList(scope.row.agentId)'>{{scope.row.underAgentCount}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="下属代理总额">
-        <template scope="scope">
-          <span>{{scope.row.areaAgentUnderTotalPickUp}}</span>
+          <span>{{scope.row.addCount}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="直属人数" width="95">
+
+      <el-table-column align="center" label="总下属数" width="95">
         <template scope="scope">
           <span class="link-type" @click='handlerMemberList(scope.row.gameId)'>{{scope.row.memberCount}}</span>
         </template>
@@ -97,6 +89,12 @@
       <el-table-column align="center" label="周数">
         <template scope="scope">
           <span>第{{scope.row.week}}周</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="本周是否已派发奖励">
+        <template scope="scope">
+
         </template>
       </el-table-column>
 
