@@ -10,6 +10,7 @@
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
     </div>
      <div style="margin: 3px"><span style="font-size: 20px">下属总充值:{{totalMoney}}</span> 元</div>
+     <div style="margin: 3px"><span style="font-size: 20px">本周新增数:{{addCount}}</span> 元</div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="正在加载" border fit highlight-current-row style="width: 100%">
 
       <el-table-column align="center" label="Guid">
@@ -34,16 +35,21 @@
           <span>第{{scope.row.week}}周</span>
         </template>
       </el-table-column>
+      <el-table-column  label="卡片">
+        <template scope="scope">
+          <span>{{scope.row.cardCount}}</span>
+        </template>
+      </el-table-column>
 
-      <el-table-column  label="剩余金豆">
+      <el-table-column  label="金豆">
         <template scope="scope">
           <span>{{scope.row.goldCount}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column  label="剩余银豆">
+      <el-table-column  label="钻石">
         <template scope="scope">
-          <span>{{scope.row.sliverCount }}</span>
+          <span>{{scope.row.diamondCount }}</span>
         </template>
       </el-table-column>
 
@@ -97,6 +103,7 @@
         list: [],
         total: 0,
         totalMoney: '',
+        addCount: '',
         dialogPickVisible: false,
         listLoading: true,
         listQuery: {
@@ -125,6 +132,7 @@
           const data = response.data.data
           this.list = data.playerResponseVoList
           this.totalMoney = data.underMoney
+          this.addCount = data.addCount
           this.listLoading = false
         })
         queryAgentPlayerCount(this.listQuery).then(response => {
