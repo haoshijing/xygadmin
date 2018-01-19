@@ -11,6 +11,11 @@ export function resetPwd(agentId) {
     'agent/resetPwd?agentId='.concat(agentId)
   )
 }
+export function dealCash(id, status) {
+  return http.get(
+    'cash/dealCash?id='.concat(id).concat('&status=').concat(status)
+  )
+}
 
 export function fetchAgentCount(query) {
   return http.post(

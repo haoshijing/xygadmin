@@ -94,7 +94,7 @@
 
       <el-table-column align="center" label="本周是否已派发奖励">
         <template scope="scope">
-
+          {{scope.row.isAward}}
         </template>
       </el-table-column>
 
@@ -104,9 +104,15 @@
           </el-button>
           <el-button  size="small" type="success" @click="handlerResetPwd(scope.row.agentId)">重置密码
           </el-button>
+
         </template>
       </el-table-column>
-
+      <el-table-column align="left" label="提现申请" width="250" >
+        <template scope="scope">
+          <el-button  size="small" v-if="scope.row.cashPo" type="success" @click="hanlderCashApply(scope.row.cashPo)">新申请
+          </el-button>
+        </template>
+      </el-table-column>
     </el-table>
 
     <div v-show="!listLoading" class="pagination-container">
@@ -176,6 +182,14 @@
         <el-button type="primary" @click="dialogPorxyVisible = false">确 定</el-button>
       </span>
     </el-dialog>
+
+    <el-dialog title="代理提现申请" :visible.sync="cashApplyVisible" size="small">
+
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handlerApply(1,2)">同意</el-button>
+        <el-button type="primary" @click="handlerApply(1,3)">拒绝</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -187,6 +201,7 @@
   import { obtainUnderPlayer } from '@/api/agent'
   import { obtainUnderAgent } from '@/api/agent'
   import { obtainChooseAgentList } from '@/api/agent'
+  import { dealCash } from '@/api/agent'
   import { resetPwd } from '@/api/agent'
 
   import waves from '@/directive/waves/index.js' // 水波纹指令
@@ -214,6 +229,7 @@
       return {
         dialogMemberVisible: false,
         dialogPorxyVisible: false,
+        cashApplyVisible: false,
         list: [],
         chooseAgentList: [],
         chooseAreaAgentList: [],
@@ -275,6 +291,9 @@
           this.listLoading = false
         })
       },
+      hanlderCashApply(applyData) {
+        this.cashApplyVisible = false
+      },
       handleClipboard(text, event) {
         clipboard(text, event)
       },
@@ -296,6 +315,11 @@
       },
       handleSizeChange(val) {
         this.listQuery.limit = val
+        this.getList()
+      },
+      handlerApply(aId, status) {
+        this.cashApplyVisible = false
+        dealCash(aId, status)
         this.getList()
       },
       handlerResetPwd(agentId) {
