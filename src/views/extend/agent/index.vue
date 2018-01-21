@@ -1,23 +1,30 @@
 <template>
   <div class="app-container calendar-list-container">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="guid" v-model="listQuery.guid">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="guid"
+                v-model="listQuery.guid">
       </el-input>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="用户名" v-model="listQuery.userName">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="用户名"
+                v-model="listQuery.userName">
       </el-input>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="微信号" v-model="listQuery.weChartNo">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="微信号"
+                v-model="listQuery.weChartNo">
       </el-input>
 
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="昵称" v-model="listQuery.nickName">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="昵称"
+                v-model="listQuery.nickName">
       </el-input>
 
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="周数" v-model="listQuery.week">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="周数"
+                v-model="listQuery.week">
       </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button>
+      <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加
+      </el-button>
     </div>
 
-    <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="正在加载" border fit highlight-current-row style="width: 100%">
+    <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="正在加载" border fit
+              highlight-current-row style="width: 100%">
       <!--
       <el-table-column align="center" label="代理编号">
         <template scope="scope">
@@ -25,37 +32,37 @@
         </template>
       </el-table-column>
       -->
-      <el-table-column  align="center" label="guid">
+      <el-table-column align="center" label="guid">
         <template scope="scope">
           <span @click='handleClipboard(scope.row.gameId,$event)'>{{scope.row.gameId}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column  label="用户名">
+      <el-table-column label="用户名">
         <template scope="scope">
           <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column  align="center" label="备注名">
+      <el-table-column align="center" label="备注名">
         <template scope="scope">
           <span>{{scope.row.weChartNo}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column  align="center" label="卡片">
+      <el-table-column align="center" label="卡片">
         <template scope="scope">
           <span>{{scope.row.cardCount}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column  label="金币">
+      <el-table-column label="金币">
         <template scope="scope">
           <span>{{scope.row.goldCount}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column  label="钻石">
+      <el-table-column label="钻石">
         <template scope="scope">
           <span>{{scope.row.diamondCount}}</span>
         </template>
@@ -91,40 +98,47 @@
           <span>第{{scope.row.week}}周</span>
         </template>
       </el-table-column>
-
-      <el-table-column align="center" label="本周是否已派发奖励">
+      <el-table-column align="center" label="支付宝账号">
+        <template scope="scope">
+          {{scope.row.alipayAccout}}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="微信账号">
+        <template scope="scope">
+          {{scope.row.wechartAccout}}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="是否发奖励">
         <template scope="scope">
           {{scope.row.isAward}}
         </template>
       </el-table-column>
 
-      <el-table-column align="left" label="操作" width="250" >
+      <el-table-column align="left" label="操作" width="250">
         <template scope="scope">
-          <el-button  size="small" type="success" @click="handleUpdate(scope.row)">编辑
+          <el-button size="small" type="success" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button  size="small" type="success" @click="handlerResetPwd(scope.row.agentId)">重置密码
+          <el-button size="small" type="success" @click="handlerResetPwd(scope.row.agentId)">重置密码
           </el-button>
-
-        </template>
-      </el-table-column>
-      <el-table-column align="left" label="提现申请" width="250" >
-        <template scope="scope">
-          <el-button  size="small" v-if="scope.row.cashPo" type="success" @click="hanlderCashApply(scope.row.cashPo)">新申请
+          <el-button size="small" v-if="scope.row.cashPo" type="success" @click="handlerCashApply(scope.row.cashPo)">新申请
           </el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <div v-show="!listLoading" class="pagination-container">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
-                     :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                     :current-page.sync="listQuery.page"
+                     :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit"
+                     layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
-      <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form class="small-space" :model="temp" label-position="left" label-width="70px" style='width: 400px; margin-left:50px;'>
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+      <el-form class="small-space" :model="temp" label-position="left" label-width="70px"
+               style='width: 400px; margin-left:50px;'>
         <el-form-item label="用户名">
-          <el-input v-model="temp.userName" v-if = "!temp.id"></el-input>
-          <span v-if = "temp.id">{{temp.userName}}</span>
+          <el-input v-model="temp.userName" v-if="!temp.id"></el-input>
+          <span v-if="temp.id">{{temp.userName}}</span>
         </el-form-item>
 
         <el-form-item label="昵称">
@@ -132,16 +146,16 @@
         </el-form-item>
 
         <el-form-item label="备注号">
-          <el-input v-model="temp.wechartNo" ></el-input>
+          <el-input v-model="temp.wechartNo"></el-input>
         </el-form-item>
 
 
         <el-form-item label="guid">
-          <el-select class="filter-item" filterable  v-if = "!temp.id" v-model="temp.guid" placeholder="请选择">
+          <el-select class="filter-item" filterable v-if="!temp.id" v-model="temp.guid" placeholder="请选择">
             <el-option v-for="item in  chooseAgentList" :key="item" :label="item" :value="item">
             </el-option>
           </el-select>
-          <span v-if = "temp.id">{{temp.guid}}</span>
+          <span v-if="temp.id">{{temp.guid}}</span>
         </el-form-item>
 
 
@@ -158,10 +172,10 @@
     </el-dialog>
     <el-dialog title="下属会员" :visible.sync="dialogMemberVisible" size="small">
       <el-table :data="memberList" border fit highlight-current-row style="width: 100%">
-        <el-table-column prop="playerGuid" label="Guid"> </el-table-column>
-        <el-table-column prop="name" label="用户名"> </el-table-column>
-        <el-table-column prop="playerPickUp" label="总充值"> </el-table-column>
-        <el-table-column prop="createTime" label="创建时间"> </el-table-column>
+        <el-table-column prop="playerGuid" label="Guid"></el-table-column>
+        <el-table-column prop="name" label="用户名"></el-table-column>
+        <el-table-column prop="playerPickUp" label="总充值"></el-table-column>
+        <el-table-column prop="createTime" label="创建时间"></el-table-column>
       </el-table>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="dialogMemberVisible = false">确 定</el-button>
@@ -169,13 +183,13 @@
     </el-dialog>
     <el-dialog title="下属代理" :visible.sync="dialogPorxyVisible" size="small">
       <el-table :data="proxyAgentList" border fit highlight-current-row style="width: 100%">
-        <el-table-column prop="agentId" label="代理id"> </el-table-column>
-        <el-table-column prop="agentGuid" label="代理guid"> </el-table-column>
-        <el-table-column prop="username" label="用户名"> </el-table-column>
-        <el-table-column prop="wechartNo" label="微信号"> </el-table-column>
-        <el-table-column prop="nickname" label="昵称"> </el-table-column>
-        <el-table-column prop="proxyPickTotal" label="代理总充值"> </el-table-column>
-        <el-table-column prop="proxyAgentTotal" label="下属总充值"> </el-table-column>
+        <el-table-column prop="agentId" label="代理id"></el-table-column>
+        <el-table-column prop="agentGuid" label="代理guid"></el-table-column>
+        <el-table-column prop="username" label="用户名"></el-table-column>
+        <el-table-column prop="wechartNo" label="微信号"></el-table-column>
+        <el-table-column prop="nickname" label="昵称"></el-table-column>
+        <el-table-column prop="proxyPickTotal" label="代理总充值"></el-table-column>
+        <el-table-column prop="proxyAgentTotal" label="下属总充值"></el-table-column>
 
       </el-table>
       <span slot="footer" class="dialog-footer">
@@ -184,34 +198,45 @@
     </el-dialog>
 
     <el-dialog title="代理提现申请" :visible.sync="cashApplyVisible" size="small">
+      <el-form class="small-space" :model="temp" label-position="left" label-width="70px"
+               style='width: 400px; margin-left:50px;'>
+        <el-form-item label="GUID:">
+          <span>{{cash.playerId}}</span>
+        </el-form-item>
 
+        <el-form-item label="提现金币数:">
+          <span>{{cash.goldCount}}</span>
+        </el-form-item>
+      </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="handlerApply(1,2)">同意</el-button>
-        <el-button type="primary" @click="handlerApply(1,3)">拒绝</el-button>
+        <el-button type="primary" @click="handlerApply(2)">同意</el-button>
+        <el-button type="primary" @click="handlerApply(3)">拒绝</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-  import { fetchAgentList } from '@/api/agent'
-  import { fetchAgentCount } from '@/api/agent'
-  import { createUpdateAgent } from '@/api/agent'
-  import { obtainChooseAreaAgentList } from '@/api/agent'
-  import { obtainUnderPlayer } from '@/api/agent'
-  import { obtainUnderAgent } from '@/api/agent'
-  import { obtainChooseAgentList } from '@/api/agent'
-  import { dealCash } from '@/api/agent'
-  import { resetPwd } from '@/api/agent'
+  import {fetchAgentList} from '@/api/agent'
+  import {fetchAgentCount} from '@/api/agent'
+  import {createUpdateAgent} from '@/api/agent'
+  import {obtainChooseAreaAgentList} from '@/api/agent'
+  import {obtainUnderPlayer} from '@/api/agent'
+  import {obtainUnderAgent} from '@/api/agent'
+  import {obtainChooseAgentList} from '@/api/agent'
+  import {dealCash} from '@/api/agent'
+  import {resetPwd} from '@/api/agent'
 
   import waves from '@/directive/waves/index.js' // 水波纹指令
   import clipboard from '@/utils/clipboard' // use clipboard directly
-  import { parseTime } from '@/utils'
-  import { getCurrentWeek } from '@/utils'
+  import {parseTime} from '@/utils'
+  import {getCurrentWeek} from '@/utils'
+
   const proxyList = [
-    { key: 2, label: '地区代理' },
-    { key: 3, label: '群主代理' }
+    {key: 2, label: '地区代理'},
+    {key: 3, label: '群主代理'}
   ]
+
   export function getAgentTypeName(type) {
     const types = {
       1: '总管理员',
@@ -220,6 +245,7 @@
     }
     return types[type]
   }
+
   export default {
     name: 'proxylist',
     directives: {
@@ -231,6 +257,8 @@
         dialogPorxyVisible: false,
         cashApplyVisible: false,
         list: [],
+        cash: {},
+        cashid: 0,
         chooseAgentList: [],
         chooseAreaAgentList: [],
         currentWeek: '',
@@ -291,8 +319,13 @@
           this.listLoading = false
         })
       },
-      hanlderCashApply(applyData) {
-        this.cashApplyVisible = false
+      handlerCashApply(applyData) {
+        this.cash = {
+          playerId: applyData.playerId,
+          goldCount:applyData.goldCount
+        }
+        this.cashid = applyData.id
+        this.cashApplyVisible = true
       },
       handleClipboard(text, event) {
         clipboard(text, event)
@@ -317,10 +350,11 @@
         this.listQuery.limit = val
         this.getList()
       },
-      handlerApply(aId, status) {
+      handlerApply(status) {
+        debugger
+        dealCash(this.cashid, status)
         this.cashApplyVisible = false
-        dealCash(aId, status)
-        this.getList()
+        this.handleFilter()
       },
       handlerResetPwd(agentId) {
         resetPwd(agentId).then((response) => {
